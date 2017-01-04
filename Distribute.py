@@ -1,12 +1,11 @@
-#!/usr/bin/env python
-''' Distribute omnis libs
+""" Distribute omnis libs
     (c) 2005 aecker@resortp.com
     - V0.2 adds string table distribution, renamed variables.
     - V0.3 adds GUI.
     - V0.4 adds error checking and distribution check (Master and Client libs).
     - V0.5 added checkboxes for to close O$4-dev and for to check XL/RP separately.
     - V0.6 added user settings (distribute.cfg),
-           added TabPane for to seperate Distributor from Checker,
+           added TabPane for to separate Distributor from Checker,
            added Cancel of CheckDistribution,
            added single machine CheckDistribution (txtMachine),
            added code for to distribute a new (not yet distributed) library.
@@ -23,9 +22,9 @@
     - V2.2 changed //fserver/ResortP/ into R:/
     - V2.3 added new file distribution checker tab
     - V2.4 changed RP distribution folder from oraclerp to tldc1
-    - V2.5 changed distr. checker path from ResortProperties to Acumen
+    - V2.5 changed distribution checker path from ResortProperties to Acumen
     - V2.6 added new Omnis 4.2 folders
-    - V2.7 added nonuni to C:\buildfolder path
+    - V2.7 added non-unicode sub-folder (nonuni) to C:\buildfolder path
     - V2.8 changed MsSrcPath to unicode buildfolder path
     - V2.9 split MsSrcPath into two new vars: MsLibSrcPath and MsStbSrcPath.
     - V3.0 changed buildfolder path back to nonuni and finally removed MsStbSrcPath.
@@ -37,28 +36,30 @@
            - possibly finished in February 2009 by Ruben).
     - V3.2 added UAT distribution (quick+dirty, still need to refactored global M variables)  AND
            possibility to reset Base A/B/C to current live libraries (MasterLibs4).
-    - V3.3 added logging and fixed bug with STB rollout (from OS42).
+    - V3.3 added logging and fixed bug with STB roll out (from OS42).
     - V3.4 added two more test bases/slots D and E.
     - V3.5 fixed bug with logging (shutdown() was missing to close and reopen file on distribution destination change).
     - V3.6 extended live distribution with path \\tldc2.resortp.com\masterlibs4.
     - V3.7 removed tldc1 live distribution path.
-    - V3.8 changed public network pathes to fit new infrastructure/environment (using net the drive letters
+    - V3.8 changed public network paths to fit new infrastructure/environment (using net the drive letters
            R: and U: where possible - already not M: and N: for masterlibs folders).
     - V3.9 changed TLDC2 into M: drive.
     - V4.0 Added LAUNCHER.INI setup and rearranged distribution tab controls.
     - V4.1 Prepared for the usage in Malta: migrated most of the hard-coded path names into CFG file.
-    - V4.2 Added new local libs folders: C:\acumen and also for all other Omnis developer installations
+    - V4.2 Added new local libs folders: C:/acumen and also for all other Omnis developer installations
            AND added combo box for to select the TNS name
            AND fixed widget state bugs (set to 'active' instead of 'normal').
     - V4.3 Added silverpoint/tensel machine names (and changed RP to SP).
-    - V4.4 Changed LIVE distribution folders to point to new Silverpoint MasterLibs5 folders (but still using Omnis 4.2).
+    - V4.4 Changed LIVE distribution folders to point to new Silverpoint MasterLibs5 folders (still using Omnis 4.2).
     - V4.5 Excluded DfsrPrivate folder from copying from LIVE libraries command.
-    - V4.6 Extended to 7 test bases (and refactored to be dynamically further extendable by changing UATDestCount config/ini
-           variable). Now is preparing the DEBUG environment (if IS_DEBUG is True). Cosmetic changes (variable names, ...).
-    - V4.7 added new ACUMENAPP distribution source path and automatic search of OS*/Acumen subdirs.
+    - V4.6 Extended to 7 test bases (and refactored to be dynamically even further extensible by changing UATDestCount
+           config/ini variable). Now is preparing the DEBUG environment (if IS_DEBUG is True). Also done some
+           cosmetic changes (variable names, ...).
+    - V4.7 added new ACUMENAPP distribution source path and automatic search of OS*/Acumen sub dirs.
     - V5.0 Migrated to handle Omnis 5 libraries only (paths).
-'''
-VERSION = '5.0'  ## CHANGE ALSO IN setup.py !!!
+    - V5.1 replaced U: drive with //acumen.es/files/Test_Libraries
+"""
+VERSION = '5.1'  # CHANGE ALSO IN setup.py !!!
 
 import zipfile
 import glob, os, sys
@@ -72,15 +73,17 @@ import Tkinter
 from Tkinter import *
 import Tix
 
-import win32con, win32api, win32gui
+# import win32con, win32api, win32gui
+import win32api
 import ConfigParser
 import filecmp
 import logging
+logging.raiseExceptions = False
 
 #######################
 # general constants
 #######################
-IS_DEBUG  = False #True                        ###  CHANGE TO FALSE before compile for distributing
+IS_DEBUG  = False # True                        # CHANGE TO FALSE before compile for distributing
 
 TODAY_DATETIME = datetime.datetime.today()
 EXT_LBS = ".LBS"
@@ -93,7 +96,7 @@ PATHS_DEV_LIBS = [ "C:/ACUMENAPP/"
                   ,"C:/Acumen/"
                  ]
 
-PATH_PREFIX_UAT = "U:/UAT_Libs"
+PATH_PREFIX_UAT = "//acumen.es/files/Test_Libraries/UAT_Libs"
 NEW_LIB_PREFIX = 'NEW: '
 NEW_LIB_VERSION_LIVE = '0.99'   # will distribute as V1.00, only for live distribution
 NEW_LIB_VERSION_UAT = '0.9'     # .. as V1.0 for UAT distribution
@@ -198,7 +201,7 @@ for srcPath in PATHS_DEV_LIBS:
 
 # determine log, zip/backup, build-default and distribution paths
 # .. in TF: "//MINERVA.acumen.es/resortp/ADMINISTRATORS/" or "R:/ADMINISTRATORS/"
-MsLogRootPath = ConfigString('LogRootPath', "U:/DistToolLog/")
+MsLogRootPath = ConfigString('LogRootPath', "//acumen.es/files/Test_Libraries/DistToolLog/")
 # .. in TF: "NewSalesSys/Backup/"
 MsZipPath = MsLogRootPath + ConfigString('ZipFolder', "Backup/")
 MsBuildDefPath = MsLogRootPath + ConfigString('BuildFolder', "Build/")

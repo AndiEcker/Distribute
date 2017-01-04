@@ -46,7 +46,7 @@ opts = {'py2exe': {'packages': ['encodings', 'Tix', 'Tkinter'],
 
 # build the end user version 
 setup(name='Distribute',
-      version='5.0',
+      version='5.1',
       data_files = data_files,
       #script_args=['py2exe'],
       windows=["Distribute.py"],
